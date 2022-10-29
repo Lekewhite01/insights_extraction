@@ -11,6 +11,11 @@ from gensim.summarization import summarize
 api_key = st.text_input(label='Enter your API Key',)
 
 @st.cache
+def clean_text(doc):
+    cleaned = re.sub(r'\w[.)]\s*', '', doc)
+    return cleaned
+
+@st.cache
 def second_grade(text,userPrompt="Summarize this for a second-grade student:"):
     openai.api_key = api_key
     response = openai.Completion.create(
@@ -48,8 +53,8 @@ def tldr(text,userPrompt="\n\nTl;dr"):
     response = openai.Completion.create(
       model="text-davinci-002",
       prompt= text + userPrompt,
-      temperature=0.7,
-      max_tokens=1550,
+      temperature=0.4,
+      max_tokens=1750,
       top_p=1.0,
       frequency_penalty=0.0,
       presence_penalty=0.0
@@ -102,9 +107,9 @@ def main():
     final_message = """
     The data was successfully analyzed
     """
-    text1 = st.text_area(label='INPUT TEXT',placeholder="Enter First Text")
-    text2 = st.text_area(label='INPUT TEXT',placeholder="Enter Second Text")
-    text3 = st.text_area(label='INPUT TEXT',placeholder="Enter Third Text")
+    text1 = clean_text(st.text_area(label='INPUT TEXT',placeholder="Enter First Text"))
+    text2 = clean_text(st.text_area(label='INPUT TEXT',placeholder="Enter Second Text"))
+    text3 = clean_text(st.text_area(label='INPUT TEXT',placeholder="Enter Third Text"))
 
     with st.sidebar:
         # st.markdown("**Processing**")
